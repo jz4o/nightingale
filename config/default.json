@@ -1,5 +1,6 @@
 {
   "discord": {
-    "botToken": ""
+    "botToken": "",
+    "voiceChannelName": ""
   }
 }
