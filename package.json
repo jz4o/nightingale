@@ -1,5 +1,9 @@
 {
   "name": "nightingale",
   "version": "0.0.1",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "config": "^3.3.1",
+    "discord.js": "^12.2.0"
+  }
 }
