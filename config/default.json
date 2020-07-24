@@ -1,6 +1,7 @@
 {
   "discord": {
     "botToken": "",
-    "voiceChannelName": ""
+    "voiceChannelName": "",
+    "videoUrlPrefix": "https://www.youtube.com/watch"
   }
 }
