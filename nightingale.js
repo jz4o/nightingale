@@ -14,6 +14,7 @@ const Nightingale = class {
   static playStatus = this.PLAY_STATUSES.RESTING;
 
   static requestVideoUrls = [];
+  static historyVideoUrls = [];
 
   static discordConnection;
 
@@ -30,10 +31,12 @@ const Nightingale = class {
   }
 
   static sing = async () => {
-    const videoUrl = this.requestVideoUrls.shift();
+    const videoUrl = this.requestVideoUrls.shift() || this.historyVideoUrls.shift();
     if (!videoUrl) {
       return;
     }
+
+    this.historyVideoUrls.push(videoUrl);
 
     const audioStream = await ytdl(videoUrl, { filter: 'audioonly' });
     const dispatcher = this.discordConnection.play(audioStream);
