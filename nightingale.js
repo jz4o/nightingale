@@ -13,17 +13,28 @@ const Nightingale = class {
 
   static playStatus = this.PLAY_STATUSES.RESTING;
 
+  static requestVideoUrls = [];
+
   static discordConnection;
 
   static isResting = () => {
     return this.playStatus === this.PLAY_STATUSES.RESTING;
   }
 
+  static request = videoUrl => {
+    this.requestVideoUrls.push(videoUrl);
+  }
+
   static setDiscordConnection = connection => {
     this.discordConnection = connection;
   }
 
-  static sing = async videoUrl => {
+  static sing = async () => {
+    const videoUrl = this.requestVideoUrls.shift();
+    if (!videoUrl) {
+      return;
+    }
+
     const audioStream = await ytdl(videoUrl, { filter: 'audioonly' });
     const dispatcher = this.discordConnection.play(audioStream);
 
@@ -31,6 +42,8 @@ const Nightingale = class {
 
     dispatcher.once('finish', () => {
       this.playStatus = this.PLAY_STATUSES.RESTING;
+
+      this.sing();
     });
   }
 }
@@ -48,8 +61,10 @@ client.on('message', message => {
     return;
   }
 
+  Nightingale.request(message.content);
+
   if (Nightingale.isResting()) {
-    Nightingale.sing(message.content);
+    Nightingale.sing();
   }
 });
 
