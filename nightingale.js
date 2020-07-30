@@ -79,6 +79,8 @@ client.on('ready', async () => {
   Nightingale.setDiscordConnection(connection);
 
   await Nightingale.remindSongs();
+
+  Nightingale.sing();
 });
 
 client.on('message', message => {
