@@ -1,3 +1,4 @@
+const fetch = require('node-fetch')
 const config = require('config');
 
 const Discord = require('discord.js');
@@ -30,6 +31,26 @@ const Nightingale = class {
     this.discordConnection = connection;
   }
 
+  static remindSongs = async () => {
+    if (!config.nightingale.remindSongsUrl) {
+      return;
+    }
+
+    const requestUrl = new URL(config.nightingale.remindSongsUrl);
+    requestUrl.searchParams.append('token', config.nightingale.remindSongsRequestToken);
+    requestUrl.searchParams.append('action', 'memories');
+
+    const requestOptions = {
+      method: config.nightingale.remindSongsRequestMethod
+    };
+
+    const memoryUrls = await fetch(requestUrl, requestOptions)
+      .then(response => response.json())
+      .then(json => json.memories.map(memory => memory.url));
+
+    this.historyVideoUrls.push(...memoryUrls);
+  }
+
   static sing = async () => {
     const videoUrl = this.requestVideoUrls.shift() || this.historyVideoUrls.shift();
     if (!videoUrl) {
@@ -55,8 +76,9 @@ client.login(config.discord.botToken);
 
 client.on('ready', async () => {
   const connection = await client.joinToChannel(config.discord.voiceChannelName);
-
   Nightingale.setDiscordConnection(connection);
+
+  await Nightingale.remindSongs();
 });
 
 client.on('message', message => {

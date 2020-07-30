@@ -3,5 +3,10 @@
     "botToken": "",
     "voiceChannelName": "",
     "videoUrlPrefix": "https://www.youtube.com/watch"
+  },
+  "nightingale" : {
+    "remindSongsUrl": "",
+    "remindSongsRequestMethod": "GET",
+    "remindSongsRequestToken": ""
   }
 }
