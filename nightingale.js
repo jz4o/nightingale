@@ -70,6 +70,10 @@ const Nightingale = class {
       this.sing();
     });
   }
+
+  static next = () => {
+    this.sing();
+  }
 }
 
 client.login(config.discord.botToken);
@@ -84,14 +88,14 @@ client.on('ready', async () => {
 });
 
 client.on('message', message => {
-  if (!message.content.startsWith(config.discord.videoUrlPrefix)) {
-    return;
-  }
+  if (message.content === 'next') {
+    Nightingale.next();
+  } else if (message.content.startsWith(config.discord.videoUrlPrefix)) {
+    Nightingale.request(message.content);
 
-  Nightingale.request(message.content);
-
-  if (Nightingale.isResting()) {
-    Nightingale.sing();
+    if (Nightingale.isResting()) {
+      Nightingale.sing();
+    }
   }
 });
 
