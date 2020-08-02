@@ -74,6 +74,10 @@ const Nightingale = class {
   static next = () => {
     this.sing();
   }
+
+  static cancelRequest = () => {
+    this.requestVideoUrls.pop();
+  }
 }
 
 client.login(config.discord.botToken);
@@ -90,6 +94,8 @@ client.on('ready', async () => {
 client.on('message', message => {
   if (message.content === 'next') {
     Nightingale.next();
+  } else if (message.content === 'cancel request') {
+    Nightingale.cancelRequest();
   } else if (message.content.startsWith(config.discord.videoUrlPrefix)) {
     Nightingale.request(message.content);
 
