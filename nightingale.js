@@ -39,6 +39,7 @@ const Nightingale = class {
     const requestUrl = new URL(config.nightingale.remindSongsUrl);
     requestUrl.searchParams.append('token', config.nightingale.remindSongsRequestToken);
     requestUrl.searchParams.append('action', 'memories');
+    requestUrl.searchParams.append('randomize', config.nightingale.remindSongsRandomize);
 
     const requestOptions = {
       method: config.nightingale.remindSongsRequestMethod
