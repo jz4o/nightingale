@@ -8,6 +8,7 @@
     "remindSongsUrl": "",
     "remindSongsRequestMethod": "GET",
     "remindSongsRequestToken": "",
-    "remindSongsRandomize": true
+    "remindSongsRandomize": true,
+    "remindSongsLimit": 150 // specify -1 when unlimited
   }
 }
