@@ -53,6 +53,28 @@ const Nightingale = class {
     this.historyVideoUrls.push(...memoryUrls);
   }
 
+  static rememberSongTitle = (url, title) => {
+    if (!config.nightingale.remindSongsUrl) {
+      return;
+    }
+
+    const requestUrl = new URL(config.nightingale.remindSongsUrl);
+    requestUrl.searchParams.append('token', config.nightingale.remindSongsRequestToken);
+    requestUrl.searchParams.append('text', 'updateUrlTitle');
+    requestUrl.searchParams.append('url', url);
+    requestUrl.searchParams.append('title', title.replace(/ /g, '%20'));
+
+    const requestOptions = {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      },
+      body: requestUrl.searchParams.toString()
+    };
+
+    fetch(requestUrl, requestOptions);
+  }
+
   static sing = async () => {
     const videoUrl = this.requestVideoUrls.shift() || this.historyVideoUrls.shift();
     if (!videoUrl) {
@@ -65,6 +87,10 @@ const Nightingale = class {
     const dispatcher = this.discordConnection.play(audioStream);
 
     this.playStatus = this.PLAY_STATUSES.SINGING;
+
+    ytdl.getInfo(videoUrl).then(info => {
+      this.rememberSongTitle(videoUrl, info.videoDetails.title)
+    });
 
     dispatcher.once('finish', () => {
       this.playStatus = this.PLAY_STATUSES.RESTING;
