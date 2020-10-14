@@ -1,0 +1,22 @@
+version: '3.5'
+volumes:
+  node_modules:
+    driver: local
+services:
+  nightingale:
+    build:
+      context: ./
+      dockerfile: dockerfiles/nightingale/Dockerfile
+    volumes:
+      - .:/usr/src
+
+      # not sync directories
+      - node_modules:/usr/src/node_modules
+    environment:
+      TZ: Asia/Tokyo
+      LANG: en_US.UTF-8
+      NODE_ENV: production
+    working_dir: /usr/src
+    command: ['node', 'nightingale.js']
+    tty: true
+
