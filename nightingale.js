@@ -106,6 +106,17 @@ const Nightingale = class {
   static cancelRequest = () => {
     this.requestVideoUrls.pop();
   }
+
+  static again = () => {
+    const latestVideoUrl = this.historyVideoUrls.pop();
+    if (!latestVideoUrl) {
+      return;
+    }
+
+    this.requestVideoUrls.unshift(latestVideoUrl);
+
+    this.sing();
+  }
 }
 
 client.login(config.discord.botToken);
@@ -124,6 +135,8 @@ client.on('message', message => {
     Nightingale.next();
   } else if (message.content === 'cancel request') {
     Nightingale.cancelRequest();
+  } else if (message.content === 'again') {
+    Nightingale.again();
   } else if (message.content.startsWith(config.discord.videoUrlPrefix)) {
     Nightingale.request(message.content);
 
