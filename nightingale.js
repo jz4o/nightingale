@@ -12,7 +12,13 @@ const Nightingale = class {
     SINGING: 1
   };
 
+  static PLAY_MODES = {
+    NORMAL: 0,
+    ONE_SONG_REPEAT: 1
+  };
+
   static playStatus = this.PLAY_STATUSES.RESTING;
+  static playMode = this.PLAY_MODES.NORMAL;
 
   static requestVideoUrls = [];
   static historyVideoUrls = [];
@@ -21,6 +27,36 @@ const Nightingale = class {
 
   static isResting = () => {
     return this.playStatus === this.PLAY_STATUSES.RESTING;
+  }
+
+  static isSinging = () => {
+    return this.playStatus === this.PLAY_STATUSES.SINGING;
+  }
+
+  static setModeToNormal = () => {
+    if (this.isSinging() && this.isModeToOneSongRepeat()) {
+      this.historyVideoUrls.push(this.requestVideoUrls.shift());
+    }
+
+    this.playMode = this.PLAY_MODES.NORMAL;
+    console.log('set mode to normal.');
+  }
+
+  static setModeToOneSongRepeat = () => {
+    if (this.isSinging && this.isModeToNormal()) {
+      this.requestVideoUrls.unshift(this.historyVideoUrls.pop());
+    }
+
+    this.playMode = this.PLAY_MODES.ONE_SONG_REPEAT;
+    console.log('set mode to one song repeat.');
+  }
+
+  static isModeToNormal = () => {
+    return this.playMode === this.PLAY_MODES.NORMAL;
+  }
+
+  static isModeToOneSongRepeat = () => {
+    return this.playMode === this.PLAY_MODES.ONE_SONG_REPEAT;
   }
 
   static request = videoUrl => {
@@ -83,7 +119,11 @@ const Nightingale = class {
 
     console.log(videoUrl);
 
-    this.historyVideoUrls.push(videoUrl);
+    if (this.isModeToOneSongRepeat()) {
+      this.requestVideoUrls.unshift(videoUrl);
+    } else {
+      this.historyVideoUrls.push(videoUrl);
+    }
 
     const audioStream = await ytdl(videoUrl, { filter: 'audioonly' });
     const dispatcher = this.discordConnection.play(audioStream);
@@ -102,6 +142,10 @@ const Nightingale = class {
   }
 
   static next = () => {
+    if (this.isModeToOneSongRepeat()) {
+      this.historyVideoUrls.push(this.requestVideoUrls.shift());
+    }
+
     this.sing();
   }
 
@@ -110,7 +154,7 @@ const Nightingale = class {
   }
 
   static again = () => {
-    const latestVideoUrl = this.historyVideoUrls.pop();
+    const latestVideoUrl = this.isModeToOneSongRepeat ? this.requestVideoUrls.shift() : this.historyVideoUrls.pop();
     if (!latestVideoUrl) {
       return;
     }
@@ -139,6 +183,10 @@ client.on('message', message => {
     Nightingale.cancelRequest();
   } else if (message.content === 'again') {
     Nightingale.again();
+  } else if (message.content === 'set mode normal') {
+    Nightingale.setModeToNormal();
+  } else if (message.content === 'set mode one song repeat') {
+    Nightingale.setModeToOneSongRepeat();
   } else if (message.content.startsWith(config.discord.videoUrlPrefix)) {
     Nightingale.request(message.content);
 
