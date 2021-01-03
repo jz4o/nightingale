@@ -81,6 +81,8 @@ const Nightingale = class {
       return;
     }
 
+    console.log(videoUrl);
+
     this.historyVideoUrls.push(videoUrl);
 
     const audioStream = await ytdl(videoUrl, { filter: 'audioonly' });
