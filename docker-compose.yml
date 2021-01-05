@@ -17,6 +17,6 @@ services:
       LANG: en_US.UTF-8
       NODE_ENV: production
     working_dir: /usr/src
-    command: ['node', 'nightingale.js']
+    command: ['sh', 'dockerfiles/nightingale/init.sh']
     tty: true
 
