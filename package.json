@@ -8,6 +8,6 @@
     "discord.js": "12.5.1",
     "ffmpeg-static": "4.2.7",
     "node-fetch": "2.6.1",
-    "ytdl-core": "4.4.1"
+    "ytdl-core": "4.4.2"
   }
 }
