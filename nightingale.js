@@ -141,6 +141,19 @@ const Nightingale = class {
     });
   }
 
+  static prev = () => {
+    if (this.historyVideoUrls.length <= 0) {
+      return;
+    }
+
+    this.requestVideoUrls.unshift(this.historyVideoUrls.pop());
+    if (!this.isModeToOneSongRepeat()) {
+      this.requestVideoUrls.unshift(this.historyVideoUrls.pop());
+    }
+
+    this.sing();
+  }
+
   static next = () => {
     if (this.isModeToOneSongRepeat()) {
       this.historyVideoUrls.push(this.requestVideoUrls.shift());
@@ -177,7 +190,9 @@ client.on('ready', async () => {
 });
 
 client.on('message', message => {
-  if (message.content === 'next') {
+  if (message.content === 'prev') {
+    Nightingale.prev();
+  } else if (message.content === 'next') {
     Nightingale.next();
   } else if (message.content === 'cancel request') {
     Nightingale.cancelRequest();
