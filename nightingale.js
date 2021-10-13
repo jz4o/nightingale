@@ -1,10 +1,10 @@
-const fetch = require('node-fetch')
-const config = require('config');
+import fetch from 'node-fetch'
+import config from 'config';
 
-const Discord = require('discord.js');
+import Discord from 'discord.js';
 const client = new Discord.Client();
 
-const ytdl = require('ytdl-core');
+import ytdl from 'ytdl-core';
 
 const Nightingale = class {
   static PLAY_STATUSES = {

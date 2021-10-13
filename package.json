@@ -2,12 +2,13 @@
   "name": "nightingale",
   "version": "0.0.1",
   "description": "",
+  "type": "module",
   "dependencies": {
     "@discordjs/opus": "0.6.0",
     "config": "3.3.6",
     "discord.js": "12.5.3",
     "ffmpeg-static": "4.4.0",
-    "node-fetch": "2.6.1",
+    "node-fetch": "3.0.0",
     "ytdl-core": "4.9.1"
   }
 }
