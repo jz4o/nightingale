@@ -1,9 +1,8 @@
 import fetch from 'node-fetch'
 import config from 'config';
 
-import Discord from 'discord.js';
-const client = new Discord.Client();
-
+import { Intents, Client } from 'discord.js';
+import { AudioPlayerStatus, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel, StreamType } from '@discordjs/voice';
 import ytdl from 'ytdl-core';
 
 const Nightingale = class {
@@ -126,7 +125,12 @@ const Nightingale = class {
     }
 
     const audioStream = await ytdl(videoUrl, { filter: 'audioonly' });
-    const dispatcher = this.discordConnection.play(audioStream);
+    const resource = createAudioResource(audioStream, {
+      inputType: StreamType.WebmOpus
+    });
+    const player = createAudioPlayer();
+    this.discordConnection.subscribe(player);
+    player.play(resource);
 
     this.playStatus = this.PLAY_STATUSES.SINGING;
 
@@ -134,11 +138,10 @@ const Nightingale = class {
       this.rememberSongTitle(videoUrl, info.videoDetails.title)
     });
 
-    dispatcher.once('finish', () => {
-      this.playStatus = this.PLAY_STATUSES.RESTING;
+    await entersState(player, AudioPlayerStatus.Idle, 1000 * 60 * 60 * 24);
 
-      this.sing();
-    });
+    this.playStatus = this.PLAY_STATUSES.RESTING;
+    this.sing();
   }
 
   static prev = () => {
@@ -178,6 +181,7 @@ const Nightingale = class {
   }
 }
 
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.login(config.discord.botToken);
 
 client.on('ready', async () => {
@@ -189,7 +193,7 @@ client.on('ready', async () => {
   Nightingale.sing();
 });
 
-client.on('message', message => {
+client.on('messageCreate', message => {
   if (message.content === 'prev') {
     Nightingale.prev();
   } else if (message.content === 'next') {
@@ -223,6 +227,10 @@ client.joinToChannel = async channelName => {
     return;
   }
 
-  return await channel.join();
+  return joinVoiceChannel({
+    adapterCreator: channel.guild.voiceAdapterCreator,
+    channelId: channel.id,
+    guildId: channel.guild.id
+  });
 }
 
