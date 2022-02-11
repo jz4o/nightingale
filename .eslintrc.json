@@ -4,7 +4,7 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended",
+        "eslint:all",
         "plugin:node/recommended"
     ],
     "plugins": [
