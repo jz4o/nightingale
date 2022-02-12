@@ -1,8 +1,7 @@
-import fetch from 'node-fetch'
+import { AudioPlayerStatus, StreamType, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel } from '@discordjs/voice';
+import { Client, Intents } from 'discord.js';
 import config from 'config';
-
-import { Intents, Client } from 'discord.js';
-import { AudioPlayerStatus, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel, StreamType } from '@discordjs/voice';
+import fetch from 'node-fetch';
 import ytdl from 'ytdl-core';
 
 const Nightingale = class {
@@ -17,20 +16,18 @@ const Nightingale = class {
   };
 
   static playStatus = this.PLAY_STATUSES.RESTING;
+
   static playMode = this.PLAY_MODES.NORMAL;
 
   static requestVideoUrls = [];
+
   static historyVideoUrls = [];
 
   static discordConnection;
 
-  static isResting = () => {
-    return this.playStatus === this.PLAY_STATUSES.RESTING;
-  }
+  static isResting = () => this.playStatus === this.PLAY_STATUSES.RESTING;
 
-  static isSinging = () => {
-    return this.playStatus === this.PLAY_STATUSES.SINGING;
-  }
+  static isSinging = () => this.playStatus === this.PLAY_STATUSES.SINGING;
 
   static setModeToNormal = () => {
     if (this.isSinging() && this.isModeToOneSongRepeat()) {
@@ -39,7 +36,7 @@ const Nightingale = class {
 
     this.playMode = this.PLAY_MODES.NORMAL;
     console.log('set mode to normal.');
-  }
+  };
 
   static setModeToOneSongRepeat = () => {
     if (this.isSinging && this.isModeToNormal()) {
@@ -48,23 +45,19 @@ const Nightingale = class {
 
     this.playMode = this.PLAY_MODES.ONE_SONG_REPEAT;
     console.log('set mode to one song repeat.');
-  }
+  };
 
-  static isModeToNormal = () => {
-    return this.playMode === this.PLAY_MODES.NORMAL;
-  }
+  static isModeToNormal = () => this.playMode === this.PLAY_MODES.NORMAL;
 
-  static isModeToOneSongRepeat = () => {
-    return this.playMode === this.PLAY_MODES.ONE_SONG_REPEAT;
-  }
+  static isModeToOneSongRepeat = () => this.playMode === this.PLAY_MODES.ONE_SONG_REPEAT;
 
   static request = videoUrl => {
     this.requestVideoUrls.push(videoUrl);
-  }
+  };
 
   static setDiscordConnection = connection => {
     this.discordConnection = connection;
-  }
+  };
 
   static remindSongs = async () => {
     if (!config.nightingale.remindSongsUrl) {
@@ -86,7 +79,7 @@ const Nightingale = class {
       .then(json => json.memories.map(memory => memory.url));
 
     this.historyVideoUrls.push(...memoryUrls);
-  }
+  };
 
   static rememberSongTitle = (url, title) => {
     if (!config.nightingale.remindSongsUrl) {
@@ -97,18 +90,18 @@ const Nightingale = class {
     requestUrl.searchParams.append('token', config.nightingale.remindSongsRequestToken);
     requestUrl.searchParams.append('text', 'updateUrlTitle');
     requestUrl.searchParams.append('url', url);
-    requestUrl.searchParams.append('title', title.replace(/ /g, '%20'));
+    requestUrl.searchParams.append('title', title.replace(/ /gu, '%20'));
 
     const requestOptions = {
-      method: 'post',
+      body: requestUrl.searchParams.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
       },
-      body: requestUrl.searchParams.toString()
+      method: 'post'
     };
 
     fetch(requestUrl, requestOptions);
-  }
+  };
 
   static sing = async () => {
     const videoUrl = this.requestVideoUrls.shift() || this.historyVideoUrls.shift();
@@ -135,14 +128,15 @@ const Nightingale = class {
     this.playStatus = this.PLAY_STATUSES.SINGING;
 
     ytdl.getInfo(videoUrl).then(info => {
-      this.rememberSongTitle(videoUrl, info.videoDetails.title)
+      this.rememberSongTitle(videoUrl, info.videoDetails.title);
     });
 
-    await entersState(player, AudioPlayerStatus.Idle, 1000 * 60 * 60 * 24);
+    const oneDayInMilliseconds = 86400000;
+    await entersState(player, AudioPlayerStatus.Idle, oneDayInMilliseconds);
 
     this.playStatus = this.PLAY_STATUSES.RESTING;
     this.sing();
-  }
+  };
 
   static prev = () => {
     if (this.historyVideoUrls.length <= 0) {
@@ -155,7 +149,7 @@ const Nightingale = class {
     }
 
     this.sing();
-  }
+  };
 
   static next = () => {
     if (this.isModeToOneSongRepeat()) {
@@ -163,11 +157,11 @@ const Nightingale = class {
     }
 
     this.sing();
-  }
+  };
 
   static cancelRequest = () => {
     this.requestVideoUrls.pop();
-  }
+  };
 
   static again = () => {
     const latestVideoUrl = this.isModeToOneSongRepeat ? this.requestVideoUrls.shift() : this.historyVideoUrls.pop();
@@ -178,10 +172,16 @@ const Nightingale = class {
     this.requestVideoUrls.unshift(latestVideoUrl);
 
     this.sing();
-  }
-}
+  };
+};
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_VOICE_STATES
+  ]
+});
 client.login(config.discord.botToken);
 
 client.on('ready', async () => {
@@ -215,16 +215,14 @@ client.on('messageCreate', message => {
   }
 });
 
-client.joinToChannel = async channelName => {
-  const channel = client.channels.cache.find(channel => {
-    return channel.name === channelName;
-  });
+client.joinToChannel = channelName => {
+  const channel = client.channels.cache.find(cachedChannel => cachedChannel.name === channelName);
 
   if (!channel) {
     console.log('not found channel...');
 
     client.destroy();
-    return;
+    return undefined;
   }
 
   return joinVoiceChannel({
@@ -232,5 +230,5 @@ client.joinToChannel = async channelName => {
     channelId: channel.id,
     guildId: channel.guild.id
   });
-}
+};
 
