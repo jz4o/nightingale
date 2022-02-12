@@ -8,7 +8,7 @@
     "@discordjs/voice": "0.7.5",
     "config": "3.3.7",
     "discord.js": "13.6.0",
-    "eslint": "8.8.0",
+    "eslint": "8.9.0",
     "eslint-plugin-node": "11.1.0",
     "ffmpeg-static": "4.4.1",
     "node-fetch": "3.2.0",
