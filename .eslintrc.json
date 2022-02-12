@@ -15,11 +15,43 @@
         "sourceType": "module"
     },
     "rules": {
+        "arrow-parens": ["error", "as-needed"],
+        "dot-location": ["error", "property"],
+        "function-call-argument-newline": ["error", "consistent"],
+        "indent": ["error", 2],
+        "max-len": [
+            "error",
+            {
+                "code": 120,
+                "ignorePattern": "import\\s"
+            }
+        ],
+        "max-statements": [
+            "error",
+            {
+                "max": 30
+            }
+        ],
+        "no-console": ["off"],
+        "no-magic-numbers": [
+            "error",
+            {
+                "ignore": [0, 1]
+            }
+        ],
+        "no-ternary": ["off"],
+        "no-undefined": ["off"],
         "node/no-unsupported-features/node-builtins": [
             "error",
             {
                 "version": "16.13.2"
             }
-        ]
+        ],
+        "object-curly-spacing": ["error", "always"],
+        "one-var": ["error", "never"],
+        "padded-blocks": ["error", "never"],
+        "quotes": ["error", "single"],
+        "quote-props": ["error", "as-needed"],
+        "multiline-ternary": ["error", "always-multiline"]
     }
 }
