@@ -6,13 +6,13 @@ import ytdl from 'ytdl-core';
 
 const Nightingale = class {
   static PLAY_STATUSES = {
-    RESTING: 0,
-    SINGING: 1
+    'RESTING': 0,
+    'SINGING': 1
   };
 
   static PLAY_MODES = {
-    NORMAL: 0,
-    ONE_SONG_REPEAT: 1
+    'NORMAL': 0,
+    'ONE_SONG_REPEAT': 1
   };
 
   static playStatus = this.PLAY_STATUSES.RESTING;
@@ -71,7 +71,7 @@ const Nightingale = class {
     requestUrl.searchParams.append('limit', config.nightingale.remindSongsLimit);
 
     const requestOptions = {
-      method: config.nightingale.remindSongsRequestMethod
+      'method': config.nightingale.remindSongsRequestMethod
     };
 
     const memoryUrls = await fetch(requestUrl, requestOptions)
@@ -93,11 +93,11 @@ const Nightingale = class {
     requestUrl.searchParams.append('title', title.replace(/ /gu, '%20'));
 
     const requestOptions = {
-      body: requestUrl.searchParams.toString(),
-      headers: {
+      'body': requestUrl.searchParams.toString(),
+      'headers': {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
       },
-      method: 'post'
+      'method': 'post'
     };
 
     fetch(requestUrl, requestOptions);
@@ -117,9 +117,9 @@ const Nightingale = class {
       this.historyVideoUrls.push(videoUrl);
     }
 
-    const audioStream = await ytdl(videoUrl, { filter: 'audioonly' });
+    const audioStream = await ytdl(videoUrl, { 'filter': 'audioonly' });
     const resource = createAudioResource(audioStream, {
-      inputType: StreamType.WebmOpus
+      'inputType': StreamType.WebmOpus
     });
     const player = createAudioPlayer();
     this.discordConnection.subscribe(player);
@@ -176,7 +176,7 @@ const Nightingale = class {
 };
 
 const client = new Client({
-  intents: [
+  'intents': [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildVoiceStates,
@@ -227,9 +227,9 @@ client.joinToChannel = channelName => {
   }
 
   return joinVoiceChannel({
-    adapterCreator: channel.guild.voiceAdapterCreator,
-    channelId: channel.id,
-    guildId: channel.guild.id
+    'adapterCreator': channel.guild.voiceAdapterCreator,
+    'channelId': channel.id,
+    'guildId': channel.guild.id
   });
 };
 
