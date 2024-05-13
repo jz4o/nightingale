@@ -9,7 +9,7 @@
     "config": "3.3.11",
     "discord.js": "14.15.2",
     "eslint": "8.57.0",
-    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-n": "17.6.0",
     "ffmpeg-static": "5.2.0",
     "node-fetch": "3.3.2",
     "tweetnacl": "1.0.3",

@@ -5,10 +5,7 @@
     },
     "extends": [
         "eslint:all",
-        "plugin:node/recommended"
-    ],
-    "plugins": [
-        "node"
+        "plugin:n/recommended"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -41,7 +38,7 @@
         ],
         "no-ternary": ["off"],
         "no-undefined": ["off"],
-        "node/no-unsupported-features/node-builtins": [
+        "n/no-unsupported-features/node-builtins": [
             "error",
             {
                 "version": "16.13.2"
