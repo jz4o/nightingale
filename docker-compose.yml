@@ -1,4 +1,3 @@
-version: '3.5'
 volumes:
   node_modules:
     driver: local
