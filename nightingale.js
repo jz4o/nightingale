@@ -2,7 +2,7 @@ import { AudioPlayerStatus, StreamType, createAudioPlayer, createAudioResource, 
 import { Client, GatewayIntentBits } from 'discord.js';
 import config from 'config';
 import fetch from 'node-fetch';
-import ytdl from 'ytdl-core';
+import ytdl from '@distube/ytdl-core';
 
 const Nightingale = class {
   static PLAY_STATUSES = {
