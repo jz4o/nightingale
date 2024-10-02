@@ -9,11 +9,11 @@
     "@distube/ytdl-core": "4.14.4",
     "@eslint/js": "9.11.1",
     "config": "3.3.12",
-    "discord.js": "14.16.2",
+    "discord.js": "14.16.3",
     "eslint": "9.11.1",
     "eslint-plugin-n": "17.10.3",
     "ffmpeg-static": "5.2.0",
-    "globals": "15.9.0",
+    "globals": "15.10.0",
     "node-fetch": "3.3.2",
     "tweetnacl": "1.0.3"
   },
