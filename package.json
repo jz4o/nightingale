@@ -6,7 +6,7 @@
   "dependencies": {
     "@discordjs/opus": "0.10.0",
     "@discordjs/voice": "0.18.0",
-    "@distube/ytdl-core": "4.15.9",
+    "@distube/ytdl-core": "4.16.0",
     "@eslint/js": "9.19.0",
     "config": "3.3.12",
     "discord.js": "14.17.3",
