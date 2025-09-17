@@ -1,5 +1,5 @@
 import { AudioPlayerStatus, StreamType, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel } from '@discordjs/voice';
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, Events, GatewayIntentBits } from 'discord.js';
 import config from 'config';
 import fetch from 'node-fetch';
 import ytdl from '@distube/ytdl-core';
@@ -185,7 +185,7 @@ const client = new Client({
 });
 client.login(config.discord.botToken);
 
-client.on('ready', async () => {
+client.on(Events.ClientReady, async () => {
   const connection = await client.joinToChannel(config.discord.voiceChannelName);
   Nightingale.setDiscordConnection(connection);
 
