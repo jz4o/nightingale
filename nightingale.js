@@ -2,7 +2,7 @@ import { AudioPlayerStatus, StreamType, createAudioPlayer, createAudioResource, 
 import { Client, Events, GatewayIntentBits } from 'discord.js';
 import config from 'config';
 import fetch from 'node-fetch';
-import ytdl from '@distube/ytdl-core';
+import { exec, spawn } from 'child_process';
 
 const Nightingale = class {
   static PLAY_STATUSES = {
@@ -117,7 +117,7 @@ const Nightingale = class {
       this.historyVideoUrls.push(videoUrl);
     }
 
-    const audioStream = await ytdl(videoUrl, { 'filter': 'audioonly' });
+    const audioStream = spawn('yt-dlp', [videoUrl, '-f', 'bestaudio', '-o', '-', '--no-playlist']).stdout;
     const resource = createAudioResource(audioStream, {
       'inputType': StreamType.WebmOpus
     });
@@ -127,8 +127,20 @@ const Nightingale = class {
 
     this.playStatus = this.PLAY_STATUSES.SINGING;
 
-    ytdl.getInfo(videoUrl).then(info => {
-      this.rememberSongTitle(videoUrl, info.videoDetails.title);
+    exec(`yt-dlp --get-title ${videoUrl}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error.message);
+        if (stderr) {
+          console.error(stderr);
+        }
+
+        return;
+      }
+
+      const videoTitle = stdout.trim();
+      if (videoTitle) {
+        this.rememberSongTitle(videoUrl, videoTitle);
+      }
     });
 
     const oneDayInMilliseconds = 86400000;
